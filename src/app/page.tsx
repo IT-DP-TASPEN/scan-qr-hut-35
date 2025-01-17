@@ -27,7 +27,7 @@ export default function Home() {
   });
 
   useEffect(() => {
-    if (!data.name || !data.table) {
+    if (!data.name) {
       return;
     }
     storeAbsen(data.name, data.table);

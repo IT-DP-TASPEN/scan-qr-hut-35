@@ -15,7 +15,7 @@ export async function sendMessage(message: string, number: string) {
   });
 }
 
-export async function storeAbsen(name: string, table: string) {
+export async function storeAbsen(name: string, table?: string) {
   if (!fs.existsSync("absen.json")) {
     fs.writeFileSync("absen.json", "{}");
   }

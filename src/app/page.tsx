@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useZxing } from "react-zxing";
 import Image from "next/image";
+import { storeAbsen } from "@/actions";
 
 interface Data {
   name: string;
@@ -16,11 +17,21 @@ export default function Home() {
     onDecodeResult(result) {
       try {
         setData(JSON.parse(result.getText()) as Data);
+        setTimeout(() => {
+          setData({} as Data);
+        }, 10000);
       } catch (e) {
         console.log(e);
       }
     },
   });
+
+  useEffect(() => {
+    if (!data.name || !data.table) {
+      return;
+    }
+    storeAbsen(data.name, data.table);
+  }, [data]);
 
   return (
     <>
@@ -57,7 +68,7 @@ export default function Home() {
           </span>
         </div>
         <div className="flex h-full w-full items-center justify-center mt-4">
-          <div className="w-3/4 h-60 bg-[url('/abstract.png')] bg-repeat bg-contain uppercase flex items-center justify-center text-white font-extrabold text-7xl text-center">
+          <div className="w-3/4 h-60 bg-[url('/abstract.png')] bg-repeat bg-contain uppercase flex items-center justify-center text-white font-extrabold text-7xl text-center whitespace-pre-wrap">
             {data.name}
           </div>
           <div className="w-1/4 h-60 bg-[#F6C700] bg-[url('/abstract.png')] bg-repeat bg-contain flex flex-col items-center justify-center">

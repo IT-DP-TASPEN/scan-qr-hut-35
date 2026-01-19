@@ -15,13 +15,15 @@ export async function sendMessage(message: string, number: string) {
   });
 }
 
-export async function storeAbsen(name: string, table?: string) {
-  if (!fs.existsSync("absen.json")) {
-    fs.writeFileSync("absen.json", "{}");
-  }
-  const data = fs.readFileSync("absen.json", "utf-8");
-  const absen = JSON.parse(data);
-  const time = new Date().toLocaleString();
-  absen[name] = { table, time };
-  fs.writeFileSync("absen.json", JSON.stringify(absen, null, 2));
+export async function storeAbsen(name: string) {
+  await fetch("http://localhost:8080/api/employees/mark_present", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-Api-Key": "Dptaspen@25!",
+    },
+    body: JSON.stringify({
+      name,
+    }),
+  });
 }

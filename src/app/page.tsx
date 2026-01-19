@@ -5,20 +5,15 @@ import { useZxing } from "react-zxing";
 import Image from "next/image";
 import { storeAbsen } from "@/actions";
 
-interface Data {
-  name: string;
-  table: string;
-}
-
 export default function Home() {
-  const [data, setData] = useState<Data>({} as Data);
+  const [data, setData] = useState("");
 
   const { ref } = useZxing({
     onDecodeResult(result) {
       try {
-        setData(JSON.parse(result.getText()) as Data);
+        setData(result.getText());
         setTimeout(() => {
-          setData({} as Data);
+          setData("");
         }, 10000);
       } catch (e) {
         console.log(e);
@@ -27,18 +22,18 @@ export default function Home() {
   });
 
   useEffect(() => {
-    if (!data.name) {
+    if (!data) {
       return;
     }
-    storeAbsen(data.name, data.table);
+    storeAbsen(data);
   }, [data]);
 
   return (
     <>
-      <main className="flex flex-col items-center min-w-screen h-screen relative overflow-hidden z-[5]">
+      <main className="scan-shell flex flex-col items-center min-w-screen h-screen relative overflow-hidden z-[5]">
         <video
           src="/bg-1.mp4"
-          className="absolute -z-10 w-auto min-h-auto max-w-none object-cover"
+          className="scan-bg absolute inset-0 -z-10"
           autoPlay={true}
           loop={true}
         ></video>
@@ -47,47 +42,42 @@ export default function Home() {
           alt="Abstract"
           width={400}
           height={400}
-          className="absolute rotate-180 -top-44 -right-32"
+          className="scan-abstract absolute rotate-180 -top-44 -right-32"
         />
         <Image
           src="/abstract2.png"
           alt="Abstract"
           width={400}
           height={400}
-          className="absolute -bottom-44 -left-32"
+          className="scan-abstract absolute -bottom-44 -left-32"
         />
-        <div className="flex justify-center items-center px-12 py-4 bg-white rounded-b-3xl">
+        <div className="scan-logo-bar flex justify-center items-center px-12 py-4 rounded-b-3xl">
           <Image src="/dptaspen.png" alt="Logo" width={150} height={100} />
         </div>
-        <div className="flex flex-col items-center justify-center mt-8 text-center uppercase">
-          <span className="text-7xl font-extrabold text-white">
+        <div className="flex flex-col items-center justify-center mt-10 text-center uppercase">
+          <span className="font-display scan-title text-6xl md:text-7xl font-semibold text-white">
             Selamat Datang
           </span>
-          <span className="text-5xl font-extrabold text-[#DFA02F]">
-            Di HUT BANK DP TASPEN ke-35
+          <span className="scan-subtitle text-3xl md:text-5xl font-semibold">
+            Di HUT BANK DP TASPEN ke-36
           </span>
         </div>
         <div className="flex h-full w-full items-center justify-center mt-4">
-          <div className="w-3/4 h-60 bg-[url('/abstract.png')] bg-repeat bg-contain uppercase flex items-center justify-center text-white font-extrabold text-7xl text-center whitespace-pre-wrap">
-            {data.name}
-          </div>
-          <div className="w-1/4 h-60 bg-[#F6C700] bg-[url('/abstract.png')] bg-repeat bg-contain flex flex-col items-center justify-center">
-            <span className="text-white font-extrabold uppercase text-center text-3xl">
-              {data.table && "Nomor Meja"}
-            </span>
-            <span className="text-black font-extrabold uppercase text-center text-8xl">
-              {data.table}
-            </span>
+          <div className="scan-name-card w-full h-60 uppercase flex items-center justify-center text-white font-extrabold text-6xl md:text-7xl text-center whitespace-pre-wrap px-6">
+            <span className="scan-card-content">{data}</span>
           </div>
         </div>
-        <div className="self-end w-1/4 h-60 mt-4 relative">
-          <video className="w-full h-full z-10" ref={ref} />
+        <div className="scan-camera self-end w-1/4 h-60 mt-4 relative">
+          <video
+            className="w-full h-full object-cover rounded-[24px]"
+            ref={ref}
+          />
           <Image
             src="/abstract2.png"
             alt="Abstract"
             width={400}
             height={400}
-            className="absolute -bottom-44 right-32 -z-10"
+            className="scan-abstract absolute -bottom-44 right-32 -z-10"
           />
         </div>
       </main>
